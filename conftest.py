@@ -48,3 +48,13 @@ def add_product(client, product_data):
     response = client.post(f"{BASE_URL}/v1/users/user-1/cart/items", json=product_data)
     yield response
     client.delete(f"{BASE_URL}/v1/users/user-1/cart/items/{product_data['product_id']}")
+
+@pytest.fixture(scope="function")
+def user_id():
+    """
+    Возвращает user_id
+    :return: user_id
+    """
+    return {
+  "user_id": "user-1"
+}
