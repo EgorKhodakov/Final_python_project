@@ -1,8 +1,7 @@
-import pytest
-import requests
-from data.URLS import BASE_URL
 from assertions.base_asserts import assert_status_code
-from assertions.cart_asserts import assert_cart_fields, assert_prise, asser_len_items
+from assertions.cart_asserts import (asser_len_items, assert_cart_fields,
+                                     assert_prise)
+from data.URLS import BASE_URL
 
 
 def test_get_empty_cart(client):
@@ -13,6 +12,7 @@ def test_get_empty_cart(client):
     """
     response = client.get(f"{BASE_URL}/v1/users/user-1/cart")
     assert_status_code(response, 200)
+
 
 def test_card_with_product(client, add_product):
     """
@@ -25,6 +25,7 @@ def test_card_with_product(client, add_product):
     assert_status_code(response, 200)
     assert_cart_fields(response)
 
+
 def test_add_product_to_cart(client, product_data):
     """
     Проверка Добавления товара в корзину
@@ -35,6 +36,7 @@ def test_add_product_to_cart(client, product_data):
     response = client.post(f"{BASE_URL}/v1/users/user-1/cart/items", json=product_data)
     assert_status_code(response, 200)
     assert_cart_fields(response)
+
 
 def test_delete_product_from_cart(client, add_product):
     """
@@ -61,10 +63,3 @@ def test_clear_cart(client, add_product):
     assert_status_code(response, 200)
     assert_prise(response, "0")
     asser_len_items(response, 0)
-
-
-
-
-
-
-

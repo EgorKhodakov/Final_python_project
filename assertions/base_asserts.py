@@ -27,3 +27,13 @@ def assert_body_error_code(actual: Response, expected: int):
     :return:
     """
     assert actual.json()["code"] == expected
+
+
+def assert_response_error_message(actual: Response, expected: str):
+    """
+    Проверка сообщения об ошибке в теле ответа
+    :param actual: полученное сообщение об ошибке
+    :param expected: ожидаемое сообщение об ошибке
+    :return:
+    """
+    assert_equals(actual.json()["message"], expected)

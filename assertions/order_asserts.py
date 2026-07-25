@@ -1,8 +1,9 @@
-from assertions.base_asserts import assert_equals
 from httpx import Response
 
+from assertions.base_asserts import assert_equals
 
-def assert_order_status(actual:Response, expected):
+
+def assert_order_status(actual: Response, expected):
     """
     Проверка статуса заказа
     :param actual: Полученный статус
@@ -22,3 +23,13 @@ def assert_order_id_message(actual: Response, expected):
     """
     actual_message = actual.json()["message"]
     assert_equals(actual_message, expected)
+
+
+def assert_order_id_equals(actual: Response, expected):
+    """
+    Проверка соответствия order_id
+    :param actual: полученный order_id
+    :param expected: ожидаемый order_id
+    :return:
+    """
+    assert_equals(actual.json()["order"]["id"], expected)
