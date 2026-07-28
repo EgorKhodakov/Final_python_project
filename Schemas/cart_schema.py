@@ -3,6 +3,10 @@ from typing import List
 from pydantic import BaseModel
 
 
+class PromocodeSchema(BaseModel):
+    code: str
+
+
 class CartSchema(BaseModel):
     """
     Модель товара расположенного в корзине
