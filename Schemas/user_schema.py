@@ -5,7 +5,3 @@ class CreateUserShema(BaseModel):
     """
     Модель запроса для создания пользователя
     """
-    email: str
-    password: str
-    name: str
-
