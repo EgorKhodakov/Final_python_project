@@ -7,6 +7,7 @@ class ProductShema(BaseModel):
     """
     Модель продукта
     """
+
     id: str
     name: str
     description: str
@@ -18,7 +19,6 @@ class ProductListSchema(BaseModel):
     """
     Модель получения списка продуктов
     """
+
     products: List[ProductShema]
     nextPageToken: str
-
-

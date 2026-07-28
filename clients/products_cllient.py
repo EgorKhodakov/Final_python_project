@@ -12,7 +12,6 @@ class ProductsClient(BaseClient):
         """
         return self._request("GET", "/v1/products")
 
-
     def get_product_by_id(self, product_id: int) -> Response:
         """
         Получение товара по id
@@ -20,4 +19,3 @@ class ProductsClient(BaseClient):
         :return: объект httpx Response
         """
         return self._request("GET", f"/v1/products/{product_id}")
-

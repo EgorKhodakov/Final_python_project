@@ -1,8 +1,7 @@
-import requests
 from httpx import Response
 
-from Schemas.cart_schema import CartSchema, PromocodeSchema
 from clients.base_client import BaseClient
+from Schemas.cart_schema import CartSchema, PromocodeSchema
 
 
 class CartClient(BaseClient):
@@ -15,18 +14,18 @@ class CartClient(BaseClient):
         """
         return self._request("GET", f"/v1/users/{user_id}/cart")
 
-
-    def add_product_to_cart(self, user_id: str, payload: CartSchema ) -> Response:
+    def add_product_to_cart(self, user_id: str, payload: CartSchema) -> Response:
         """
         Добавление продукта в корзину
         :param user_id: уникальный id пользователя
         :param payload: Модель ответа на получение корзины
         :return: объект httpx Response
         """
-        return self._request("POST", f"/v1/users/{user_id}/cart/items", json=payload)
+        return self._request(
+            "POST", f"/v1/users/{user_id}/cart/items", json=payload.model_dump()
+        )
 
-
-    def remove_product_from_cart(self, user_id: str, product_id: str ) -> Response:
+    def remove_product_from_cart(self, user_id: str, product_id: str) -> Response:
         """
         Удаление продукта из корзины
         :param user_id: уникальный id пользователя
@@ -34,7 +33,6 @@ class CartClient(BaseClient):
         :return: объект httpx Response
         """
         return self._request("DELETE", f"/v1/users/{user_id}/cart/items/{product_id}")
-
 
     def clear_cart(self, user_id: str) -> Response:
         """
@@ -44,7 +42,6 @@ class CartClient(BaseClient):
         """
         return self._request("DELETE", f"/v1/users/{user_id}/cart")
 
-
     def add_promocode_to_cart(self, user_id: str, paylod: PromocodeSchema) -> Response:
         """
         Добавление промокода в корзину
@@ -52,8 +49,9 @@ class CartClient(BaseClient):
         :param paylod: модель тела запроса промокода
         :return: объект httpx Response
         """
-        return self._request("POST", f"/v1/users/{user_id}/cart/promocode", json=paylod)
-
+        return self._request(
+            "POST", f"/v1/users/{user_id}/cart/promocode", json=paylod.model_dump()
+        )
 
     def remove_promocode_from_cart(self, user_id: str) -> Response:
         """

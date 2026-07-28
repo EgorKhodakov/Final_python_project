@@ -5,6 +5,7 @@ class BaseClient:
     """
     Base class for all clients.
     """
+
     def __init__(self, client: httpx.Client):
         self.client = client
 
