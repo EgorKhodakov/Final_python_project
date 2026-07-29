@@ -1,7 +1,7 @@
 from httpx import Response
 
 from clients.base_client import BaseClient
-from Schemas.order_schema import CreateOrderSchema, RefreshOrderSchema
+from schemas.order_schema import CreateOrderSchema, RefreshOrderSchema
 
 
 class OrderClient(BaseClient):

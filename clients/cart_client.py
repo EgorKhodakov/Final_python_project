@@ -1,7 +1,7 @@
 from httpx import Response
 
 from clients.base_client import BaseClient
-from Schemas.cart_schema import CartSchema, PromocodeSchema
+from schemas.cart_schema import CartSchema, PromocodeSchema
 
 
 class CartClient(BaseClient):
