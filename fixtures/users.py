@@ -11,10 +11,8 @@ class FunctionUser(BaseModel):
     def id(self) -> str:
         return self.response.user.id
 
-
     def password(self) -> str:
         return self.request.password
-
 
     def email(self) -> str:
         return self.request.email

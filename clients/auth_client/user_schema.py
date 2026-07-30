@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
 from faker import Faker
 
-
 fake = Faker()
+
 
 class UserSchema(BaseModel):
     id: str
@@ -17,9 +17,9 @@ class CreateUserShema(BaseModel):
     Модель запроса для создания пользователя
     """
 
-    email: str = Field(default_factory= fake.email)
-    password: str = Field(default_factory= fake.password)
-    name: str = Field(default_factory= fake.name)
+    email: str = Field(default_factory=fake.email)
+    password: str = Field(default_factory=fake.password)
+    name: str = Field(default_factory=fake.name)
 
 
 class CreateUserResponseSchema(BaseModel):
@@ -28,5 +28,5 @@ class CreateUserResponseSchema(BaseModel):
 
 
 class LoginUserShema(BaseModel):
-    email: str = Field(default_factory= fake.email)
-    password: str = Field(default_factory= fake.password)
+    email: str = Field(default_factory=fake.email)
+    password: str = Field(default_factory=fake.password)

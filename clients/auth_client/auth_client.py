@@ -32,7 +32,6 @@ class AuthClient(BaseClient):
         """
         return self._request("GET", f"/v1/users/{user_id}")
 
-
     def create_user(self, request: CreateUserShema) -> CreateUserResponseSchema:
         response = self.create_user_api(request)
         return CreateUserResponseSchema.model_validate_json(response.text)
