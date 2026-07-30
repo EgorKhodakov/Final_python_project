@@ -1,6 +1,6 @@
 from clients.http_clients import HttpClients
-from conftest import FunctionUser
-from schemas.user_schema import CreateUserShema, LoginUserShema
+from fixtures.users import FunctionUser
+from clients.auth_client.user_schema import CreateUserShema, LoginUserShema
 
 
 def test_create_user(http: HttpClients):
