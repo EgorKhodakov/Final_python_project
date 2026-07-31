@@ -1,56 +1,72 @@
 from httpx import Response
 
 from clients.base_client import BaseClient
-from clients.cart_client.cart_schema import CartSchema, PromocodeSchema
+from clients.cart_client.cart_schema import PromocodeSchema, AddCartRequestSchema
 
 
 class CartClient(BaseClient):
 
-    def get_cart(self, user_id: str) -> Response:
+    def get_cart(self, user_id: str, access_token: str) -> Response:
         """
         Получение корзины
+        :param access_token: токен авторизации
         :param user_id: уникальный id пользователя
         :return: объект httpx Response
         """
-        return self._request("GET", f"/v1/users/{user_id}/cart")
+        headers = {"Authorization": f"Bearer {access_token}"}
+        return self._request("GET", f"/v1/users/{user_id}/cart", headers=headers)
 
-    def add_product_to_cart(self, user_id: str, payload: CartSchema) -> Response:
+    def add_product_to_cart(
+        self, user_id: str, request: AddCartRequestSchema, access_token: str
+    ) -> Response:
         """
         Добавление продукта в корзину
+        :param access_token:
+        :param request:
         :param user_id: уникальный id пользователя
-        :param payload: Модель ответа на получение корзины
         :return: объект httpx Response
         """
+        headers = {"Authorization": f"Bearer {access_token}"}
         return self._request(
-            "POST", f"/v1/users/{user_id}/cart/items", json=payload.model_dump()
+            "POST", f"/v1/users/{user_id}/cart/items", json=request, headers=headers
         )
 
-    def remove_product_from_cart(self, user_id: str, product_id: str) -> Response:
+    def remove_product_from_cart(
+        self, user_id: str, product_id: str, access_token: str
+    ) -> Response:
         """
         Удаление продукта из корзины
+        :param access_token:
         :param user_id: уникальный id пользователя
         :param product_id: Уникальный id продукта
         :return: объект httpx Response
         """
-        return self._request("DELETE", f"/v1/users/{user_id}/cart/items/{product_id}")
+        headers = {"Authorization": f"Bearer {access_token}"}
+        return self._request(
+            "DELETE", f"/v1/users/{user_id}/cart/items/{product_id}", headers=headers
+        )
 
-    def clear_cart(self, user_id: str) -> Response:
+    def clear_cart(self, user_id: str, access_token: str) -> Response:
         """
         Очищение корзины
+        :param access_token:
         :param user_id: уникальный id пользователя
         :return: объект httpx Response
         """
-        return self._request("DELETE", f"/v1/users/{user_id}/cart")
+        headers = {"Authorization": f"Bearer {access_token}"}
+        return self._request("DELETE", f"/v1/users/{user_id}/cart", headers=headers)
 
-    def add_promocode_to_cart(self, user_id: str, paylod: PromocodeSchema) -> Response:
+    def add_promocode_to_cart(self, user_id: str, paylod: PromocodeSchema, access_token:str) -> Response:
         """
         Добавление промокода в корзину
+        :param access_token:
         :param user_id: уникальный id пользователя
         :param paylod: модель тела запроса промокода
         :return: объект httpx Response
         """
+        headers = {"Authorization": f"Bearer {access_token}"}
         return self._request(
-            "POST", f"/v1/users/{user_id}/cart/promocode", json=paylod.model_dump()
+            "POST", f"/v1/users/{user_id}/cart/promocode", json=paylod.model_dump(), headers=headers
         )
 
     def remove_promocode_from_cart(self, user_id: str) -> Response:

@@ -1,1 +1,5 @@
-pytest_plugins = ("fixtures.users", "fixtures.http_client")
+pytest_plugins = (
+    "fixtures.users",
+    "fixtures.http_client",
+    "fixtures.cart",
+)

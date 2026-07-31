@@ -17,6 +17,9 @@ class FunctionUser(BaseModel):
     def email(self) -> str:
         return self.request.email
 
+    def access_token(self) -> str:
+        return self.response.accessToken
+
 
 @pytest.fixture(scope="function")
 def function_user(http) -> FunctionUser:

@@ -7,12 +7,12 @@ class PromocodeSchema(BaseModel):
     code: str
 
 
-class CartSchema(BaseModel):
+class AddCartRequestSchema(BaseModel):
     """
     Модель товара расположенного в корзине
     """
 
-    product_id: int
+    productId: str
     quantity: int
 
 
@@ -21,7 +21,7 @@ class CartResponseSchema(BaseModel):
     Модель ответа запроса на получение корзины
     """
 
-    items: List[CartSchema]
+    items: List[AddCartRequestSchema]
     totalPriceCents: str
     subtotalCents: str
     discountCents: str
