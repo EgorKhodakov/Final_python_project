@@ -1,6 +1,8 @@
+from assertions.base_assert import assert_status_code
+from assertions.user_asserts import assert_create_user_response, assert_get_user_response, assert_login_user_response
+from clients.auth_client.user_schema import CreateUserShema, LoginUserShema, CreateUserResponseSchema, UserSchema
 from clients.http_clients import HttpClients
 from fixtures.users import FunctionUser
-from clients.auth_client.user_schema import CreateUserShema, LoginUserShema
 
 
 def test_create_user(http: HttpClients):
@@ -11,7 +13,9 @@ def test_create_user(http: HttpClients):
     """
     request = CreateUserShema()
     response = http.auth_client.create_user_api(request)
-    assert response.status_code == 200
+    response_data = CreateUserResponseSchema.model_validate_json(response.text)
+    assert_status_code(response, 200)
+    assert_create_user_response(request, response_data)
 
 
 def test_user_by_id(http: HttpClients, function_user: FunctionUser):
@@ -23,7 +27,10 @@ def test_user_by_id(http: HttpClients, function_user: FunctionUser):
     """
     user_id = function_user.id()
     response = http.auth_client.get_user_by_id_api(user_id)
-    assert response.status_code == 200
+    response_data = UserSchema.model_validate_json(response.text)
+    assert_status_code(response, 200)
+    assert_get_user_response(function_user, response_data)
+
 
 
 def test_login_user(http: HttpClients, function_user: FunctionUser):
@@ -37,7 +44,9 @@ def test_login_user(http: HttpClients, function_user: FunctionUser):
         email=function_user.email(), password=function_user.password()
     )
     response = http.auth_client.login_user_api(request)
-    assert response.status_code == 200
+    response_data = CreateUserResponseSchema.model_validate_json(response.text)
+    assert_status_code(response, 200)
+    assert_login_user_response(function_user, response_data.user)
 
 
 def test_login_user_with_wrong_password(http: HttpClients, function_user: FunctionUser):
@@ -49,9 +58,9 @@ def test_login_user_with_wrong_password(http: HttpClients, function_user: Functi
     """
     request = LoginUserShema(
         email=function_user.email(),
-    )  # сама генерирует фейковые данные
+    )  # фикстура генерирует фейковые данные
     response = http.auth_client.login_user_api(request)
-    assert response.status_code == 401
+    assert_status_code(response, 401)
 
 
 def test_login_user_with_wrong_email(http: HttpClients, function_user: FunctionUser):
@@ -63,9 +72,9 @@ def test_login_user_with_wrong_email(http: HttpClients, function_user: FunctionU
     """
     request = LoginUserShema(
         password=function_user.password(),
-    )  # сама генерирует фейковые данные
+    )  # фикстура генерирует фейковые данные
     response = http.auth_client.login_user_api(request)
-    assert response.status_code == 401
+    assert_status_code(response, 401)
 
 
 def test_user_with_incorrect_id(http: HttpClients, function_user: FunctionUser):
@@ -77,4 +86,4 @@ def test_user_with_incorrect_id(http: HttpClients, function_user: FunctionUser):
     """
     user_id = "sdafwer423434334fv"
     response = http.auth_client.get_user_by_id_api(user_id)
-    assert response.status_code == 500
+    assert_status_code(response, 500)

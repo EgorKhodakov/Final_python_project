@@ -1,9 +1,10 @@
 from typing import Generator
 
-from pydantic import BaseModel
 import pytest
+from pydantic import BaseModel
 
-from clients.cart_client.cart_schema import AddCartRequestSchema, CartResponseSchema
+from clients.cart_client.cart_schema import (AddCartRequestSchema,
+                                             CartResponseSchema)
 from clients.http_clients import HttpClients
 from fixtures.users import FunctionUser
 
@@ -39,9 +40,7 @@ def function_cart(
         function_user.id(), request.model_dump(), function_user.access_token()
     )
     response = CartResponseSchema.model_validate_json(cart.text)
-    yield FunctionCart(
-        request=request, response=response
-    )
+    yield FunctionCart(request=request, response=response)
     http.cart_client.remove_product_from_cart(
         function_user.id(), request.productId, function_user.access_token()
     )

@@ -1,7 +1,8 @@
-from pydantic import BaseModel
 import pytest
+from pydantic import BaseModel
 
-from clients.auth_client.user_schema import CreateUserShema, CreateUserResponseSchema
+from clients.auth_client.user_schema import (CreateUserResponseSchema,
+                                             CreateUserShema)
 
 
 class FunctionUser(BaseModel):

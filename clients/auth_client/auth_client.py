@@ -1,9 +1,10 @@
 from httpx import Response
 
+from clients.auth_client.login_schema import LoginUserSchema
+from clients.auth_client.user_schema import (CreateUserResponseSchema,
+                                             CreateUserShema)
 from clients.base_client import BaseClient
 from data.urls import LOGIN_URL, REGISTATION_URL
-from clients.auth_client.login_schema import LoginUserSchema
-from clients.auth_client.user_schema import CreateUserShema, CreateUserResponseSchema
 
 
 class AuthClient(BaseClient):

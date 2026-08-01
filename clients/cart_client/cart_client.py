@@ -1,7 +1,8 @@
 from httpx import Response
 
 from clients.base_client import BaseClient
-from clients.cart_client.cart_schema import PromocodeSchema, AddCartRequestSchema
+from clients.cart_client.cart_schema import (AddCartRequestSchema,
+                                             PromocodeSchema)
 
 
 class CartClient(BaseClient):
@@ -56,7 +57,9 @@ class CartClient(BaseClient):
         headers = {"Authorization": f"Bearer {access_token}"}
         return self._request("DELETE", f"/v1/users/{user_id}/cart", headers=headers)
 
-    def add_promocode_to_cart(self, user_id: str, paylod: PromocodeSchema, access_token:str) -> Response:
+    def add_promocode_to_cart(
+        self, user_id: str, paylod: PromocodeSchema, access_token: str
+    ) -> Response:
         """
         Добавление промокода в корзину
         :param access_token:
@@ -66,7 +69,10 @@ class CartClient(BaseClient):
         """
         headers = {"Authorization": f"Bearer {access_token}"}
         return self._request(
-            "POST", f"/v1/users/{user_id}/cart/promocode", json=paylod.model_dump(), headers=headers
+            "POST",
+            f"/v1/users/{user_id}/cart/promocode",
+            json=paylod.model_dump(),
+            headers=headers,
         )
 
     def remove_promocode_from_cart(self, user_id: str) -> Response:

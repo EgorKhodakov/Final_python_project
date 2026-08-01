@@ -1,5 +1,7 @@
-from clients.http_clients import HttpClients
 import pytest
+
+from assertions.base_assert import assert_status_code
+from clients.http_clients import HttpClients
 
 
 def test_get_product_list(http: HttpClients):
@@ -8,7 +10,7 @@ def test_get_product_list(http: HttpClients):
     :param http: httpx клиент для выполнения запросов
     """
     response = http.products_client.get_product_list()
-    assert response.status_code == 200
+    assert_status_code(response, 200)
 
 
 @pytest.mark.parametrize(
@@ -27,4 +29,4 @@ def test_get_product_by_id(http: HttpClients, product_id: str, status_code: int)
     :param status_code: ожидаемый в ответе статус код
     """
     response = http.products_client.get_product_by_id(product_id)
-    assert response.status_code == status_code
+    assert_status_code(response, status_code)

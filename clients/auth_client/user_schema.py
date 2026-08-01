@@ -1,15 +1,18 @@
-from pydantic import BaseModel, Field
 from faker import Faker
+from pydantic import BaseModel, Field
 
 fake = Faker()
 
-
-class UserSchema(BaseModel):
+class User(BaseModel):
     id: str
     email: str
     name: str
     createdAt: str
     role: str
+
+
+class UserSchema(BaseModel):
+    user: User
 
 
 class CreateUserShema(BaseModel):
@@ -23,7 +26,7 @@ class CreateUserShema(BaseModel):
 
 
 class CreateUserResponseSchema(BaseModel):
-    user: UserSchema
+    user: User
     accessToken: str
 
 
