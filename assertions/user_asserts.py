@@ -1,4 +1,4 @@
-from clients.auth_client.user_schema import CreateUserShema, CreateUserResponseSchema, UserSchema, User
+from clients.user_client.user_schema import CreateUserShema, CreateUserResponseSchema, UserSchema, User
 from clients.http_clients import HttpClients
 from assertions.base_assert import assert_status_code
 from fixtures.users import FunctionUser

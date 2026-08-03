@@ -1,6 +1,6 @@
 from httpx import Client
 
-from clients.auth_client.auth_client import AuthClient
+from clients.user_client.auth_client import AuthClient
 from clients.cart_client.cart_client import CartClient
 from clients.order_client.order_client import OrderClient
 from clients.products_client.products_cllient import ProductsClient

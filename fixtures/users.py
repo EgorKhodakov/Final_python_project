@@ -1,7 +1,7 @@
 import pytest
 from pydantic import BaseModel
 
-from clients.auth_client.user_schema import (CreateUserResponseSchema,
+from clients.user_client.user_schema import (CreateUserResponseSchema,
                                              CreateUserShema)
 
 

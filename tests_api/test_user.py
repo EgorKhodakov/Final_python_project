@@ -1,6 +1,6 @@
 from assertions.base_assert import assert_status_code
 from assertions.user_asserts import assert_create_user_response, assert_get_user_response, assert_login_user_response
-from clients.auth_client.user_schema import CreateUserShema, LoginUserShema, CreateUserResponseSchema, UserSchema
+from clients.user_client.user_schema import CreateUserShema, LoginUserShema, CreateUserResponseSchema, UserSchema
 from clients.http_clients import HttpClients
 from fixtures.users import FunctionUser
 
