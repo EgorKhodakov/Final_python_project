@@ -1,16 +1,26 @@
-from clients.user_client.user_schema import CreateUserShema, CreateUserResponseSchema, UserSchema, User
-from clients.http_clients import HttpClients
-from assertions.base_assert import assert_status_code
+from clients.user_client.user_schema import CreateUserRequestShema, CreateUserResponseSchema, GetUserResponseSchema, LoginUserResponseSchema
 from fixtures.users import FunctionUser
 
 
-def assert_create_user_response(request: CreateUserShema, response: CreateUserResponseSchema):
+def assert_create_user_response(request: CreateUserRequestShema, response: CreateUserResponseSchema):
+    """
+    Проверка ответа на запрос создания пользователя
+    :param request: ожидаемые параметры
+    :param response: полученные параметры
+    :return:
+    """
     assert request.email == response.user.email
     assert request.name == response.user.name
     assert response.accessToken is not None
 
 
-def assert_get_user_response(request: FunctionUser, response: UserSchema):
+def assert_get_user_response(request: FunctionUser, response: GetUserResponseSchema):
+    """
+    Проверка ответа на получение юзера
+    :param request: ожидаемые параметры
+    :param response: полученные параметры
+    :return:
+    """
     assert request.id() == response.user.id
     assert request.email() == response.user.email
     assert request.response.user.name == response.user.name
@@ -18,9 +28,15 @@ def assert_get_user_response(request: FunctionUser, response: UserSchema):
     assert request.response.user.role == response.user.role
 
 
-def assert_login_user_response(request: FunctionUser, response: User):
-    assert request.id() == response.id
-    assert request.email() == response.email
-    assert request.response.user.name == response.name
-    assert request.response.user.createdAt == response.createdAt
-    assert request.response.user.role == response.role
+def assert_login_user_response(request: FunctionUser, response: LoginUserResponseSchema):
+    """
+    Проверка ответа на запрос авторизации пользователя
+    :param request: ожидаемые параметры
+    :param response: полученные параметры
+    :return:
+    """
+    assert request.id() == response.user.id
+    assert request.email() == response.user.email
+    assert request.name() == response.user.name
+    assert request.createdAt() == response.user.createdAt
+    assert request.role() == response.user.role
