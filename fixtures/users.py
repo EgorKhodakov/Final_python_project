@@ -38,7 +38,7 @@ class FunctionUser(BaseModel):
         Возвращает авторизационный токен
         :return:
         """
-        return self.response.accessToken
+        return self.response.access_token
 
     def name(self) -> str:
         """
@@ -47,12 +47,12 @@ class FunctionUser(BaseModel):
         """
         return self.response.user.name
 
-    def createdAt(self):
+    def created_at(self):
         """
         Возвращает время создания пользователя
         :return:
         """
-        return self.response.user.createdAt
+        return self.response.user.created_at
 
     def role(self) -> str:
         """

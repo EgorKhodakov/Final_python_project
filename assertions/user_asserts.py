@@ -11,7 +11,7 @@ def assert_create_user_response(request: CreateUserRequestShema, response: Creat
     """
     assert request.email == response.user.email
     assert request.name == response.user.name
-    assert response.accessToken is not None
+    assert response.access_token is not None
 
 
 def assert_get_user_response(request: FunctionUser, response: GetUserResponseSchema):
@@ -24,7 +24,7 @@ def assert_get_user_response(request: FunctionUser, response: GetUserResponseSch
     assert request.id() == response.user.id
     assert request.email() == response.user.email
     assert request.response.user.name == response.user.name
-    assert request.response.user.createdAt == response.user.createdAt
+    assert request.response.user.created_at == response.user.created_at
     assert request.response.user.role == response.user.role
 
 
@@ -38,5 +38,5 @@ def assert_login_user_response(request: FunctionUser, response: LoginUserRespons
     assert request.id() == response.user.id
     assert request.email() == response.user.email
     assert request.name() == response.user.name
-    assert request.createdAt() == response.user.createdAt
+    assert request.created_at() == response.user.created_at
     assert request.role() == response.user.role
