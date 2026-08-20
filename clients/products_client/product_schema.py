@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ProductShema(BaseModel):
@@ -11,7 +11,7 @@ class ProductShema(BaseModel):
     id: str
     name: str
     description: str
-    priceCents: str
+    price_cents: str = Field(alias="priceCents")
     brand: str
 
 
@@ -21,4 +21,4 @@ class ProductListSchema(BaseModel):
     """
 
     products: List[ProductShema]
-    nextPageToken: str
+    next_page_Token: str = Field(alias="nextPageToken")

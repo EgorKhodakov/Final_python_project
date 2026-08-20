@@ -14,7 +14,6 @@ def test_get_cart(http: HttpClients, function_user: FunctionUser):
     assert_status_code(response, 200)
 
 
-
 def test_add_product_to_cart(http: HttpClients, function_user: FunctionUser):
     request = {"product_id": "550e8400-e29b-41d4-a716-446655440001", "quantity": 1}
     response = http.cart_client.add_product_to_cart(

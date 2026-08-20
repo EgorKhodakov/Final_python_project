@@ -1,8 +1,15 @@
-from clients.user_client.user_schema import CreateUserRequestShema, CreateUserResponseSchema, GetUserResponseSchema, LoginUserResponseSchema
+from clients.user_client.user_schema import (
+    CreateUserRequestShema,
+    CreateUserResponseSchema,
+    GetUserResponseSchema,
+    LoginUserResponseSchema,
+)
 from fixtures.users import FunctionUser
 
 
-def assert_create_user_response(request: CreateUserRequestShema, response: CreateUserResponseSchema):
+def assert_create_user_response(
+    request: CreateUserRequestShema, response: CreateUserResponseSchema
+):
     """
     Проверка ответа на запрос создания пользователя
     :param request: ожидаемые параметры
@@ -28,7 +35,9 @@ def assert_get_user_response(request: FunctionUser, response: GetUserResponseSch
     assert request.response.user.role == response.user.role
 
 
-def assert_login_user_response(request: FunctionUser, response: LoginUserResponseSchema):
+def assert_login_user_response(
+    request: FunctionUser, response: LoginUserResponseSchema
+):
     """
     Проверка ответа на запрос авторизации пользователя
     :param request: ожидаемые параметры

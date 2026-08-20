@@ -1,8 +1,11 @@
 from httpx import Response
 
-from clients.user_client.user_schema import (CreateUserResponseSchema,
-                                             CreateUserRequestShema, LoginUserRequestSchema)
 from clients.base_client import BaseClient
+from clients.user_client.user_schema import (
+    CreateUserRequestShema,
+    CreateUserResponseSchema,
+    LoginUserRequestSchema,
+)
 from data.urls import LOGIN_URL, REGISTATION_URL
 
 

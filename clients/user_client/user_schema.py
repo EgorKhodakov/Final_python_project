@@ -1,15 +1,17 @@
 from faker import Faker
-from pydantic import BaseModel, Field, EmailStr, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 fake = Faker()
+
 
 class BaseUserSchema(BaseModel):
     """
     Базовая структура пользователя
     """
+
     model_config = ConfigDict(populate_by_name=True)
 
-    id: str
+    id: str = Field(default_factory=fake.uuid4)
     email: EmailStr
     name: str
     created_at: str = Field(alias="createdAt")
@@ -30,6 +32,7 @@ class CreateUserResponseSchema(BaseModel):
     """
     Описание структуры ответа на создание пользователя
     """
+
     model_config = ConfigDict(populate_by_name=True)
 
     user: BaseUserSchema
@@ -45,11 +48,11 @@ class LoginUserRequestSchema(BaseModel):
     password: str = Field(default_factory=fake.password)
 
 
-
 class LoginUserResponseSchema(BaseModel):
     """
     Описание структуры ответа на авторизацию пользователя
     """
+
     model_config = ConfigDict(populate_by_name=True)
 
     user: BaseUserSchema
@@ -60,4 +63,5 @@ class GetUserResponseSchema(BaseModel):
     """
     Описание структуры ответа на получение пользователя по id
     """
+
     user: BaseUserSchema

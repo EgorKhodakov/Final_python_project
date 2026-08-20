@@ -1,8 +1,10 @@
 from assertions.base_assert import assert_status_code
 from clients.http_clients import HttpClients
-from clients.order_client.order_schema import (CreateOrderSchema,
-                                               OrderResponseSchema,
-                                               RefreshOrderSchema)
+from clients.order_client.order_schema import (
+    CreateOrderResponseSchema,
+    CreateOrderSchema,
+    RefreshOrderSchema,
+)
 from fixtures.cart import FunctionCart
 from fixtures.users import FunctionUser
 
@@ -24,7 +26,9 @@ def test_create_order_with_incorrect_id(
 
 
 def test_get_order(
-    http: HttpClients, function_order: OrderResponseSchema, function_user: FunctionUser
+    http: HttpClients,
+    function_order: CreateOrderResponseSchema,
+    function_user: FunctionUser,
 ):
     response = http.order_client.get_orders(
         function_order.order.id, function_user.access_token()
@@ -33,7 +37,9 @@ def test_get_order(
 
 
 def test_get_order_success(
-    http: HttpClients, function_order: OrderResponseSchema, function_user: FunctionUser
+    http: HttpClients,
+    function_order: CreateOrderResponseSchema,
+    function_user: FunctionUser,
 ):
     response = http.order_client.get_orders(
         function_order.order.id, function_user.access_token()
@@ -42,7 +48,9 @@ def test_get_order_success(
 
 
 def test_cansel_order(
-    http: HttpClients, function_order: OrderResponseSchema, function_user: FunctionUser
+    http: HttpClients,
+    function_order: CreateOrderResponseSchema,
+    function_user: FunctionUser,
 ):
     response = http.order_client.cancel_order(
         function_order.order.id, function_user.access_token()
@@ -51,7 +59,9 @@ def test_cansel_order(
 
 
 def test_refresh_status(
-    http: HttpClients, function_order: OrderResponseSchema, function_user: FunctionUser
+    http: HttpClients,
+    function_order: CreateOrderResponseSchema,
+    function_user: FunctionUser,
 ):
     request = RefreshOrderSchema(
         fromStatus="ORDER_STATUS_CREATED",

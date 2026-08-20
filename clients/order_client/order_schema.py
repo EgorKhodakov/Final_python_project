@@ -1,30 +1,48 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CreateOrderSchema(BaseModel):
+    """
+    Модель создания заказа
+    """
+
     user_id: str
 
 
 class RefreshOrderSchema(BaseModel):
-    fromStatus: str
-    toStatus: str
+    """
+    Модель обновления заказа
+    """
+
+    from_status: str = Field(alias="fromStatus")
+    to_status: str = Field(alias="toStatus")
 
 
 class OrderItemSchema(BaseModel):
-    productId: str
+    """ """
+
+    product_id: str = Field(alias="productId")
     quantity: int
-    priceCents: str
+    price_cents: str = Field(alias="priceCents")
 
 
 class OrderSchema(BaseModel):
+    """
+    Базовая модель заказа
+    """
+
     id: str
-    userId: str
+    user_id: str = Field(alias="userId")
     items: List[OrderItemSchema]
-    totalAmountCents: str
+    total_amount_cents: str = Field(alias="totalAmountCents")
     status: str
 
 
-class OrderResponseSchema(BaseModel):
+class CreateOrderResponseSchema(BaseModel):
+    """
+    Схема ответа на создание заказа
+    """
+
     order: OrderSchema

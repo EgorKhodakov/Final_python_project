@@ -1,14 +1,17 @@
 import pytest
 from pydantic import BaseModel
 
-from clients.user_client.user_schema import (CreateUserResponseSchema,
-                                             CreateUserRequestShema)
+from clients.user_client.user_schema import (
+    CreateUserRequestShema,
+    CreateUserResponseSchema,
+)
 
 
 class FunctionUser(BaseModel):
     """
     Класс для агрегации возвращаемых фикстурой function_user данных
     """
+
     request: CreateUserRequestShema
     response: CreateUserResponseSchema
 
