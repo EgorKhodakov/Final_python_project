@@ -3,14 +3,14 @@ import pytest
 from assertions.base_assert import assert_status_code
 from assertions.user_asserts import (
     assert_create_user_response,
-    assert_get_user_response,
+    assert_get_user_response, assert_login_user_response,
 )
 from clients.http_clients import HttpClients
 from clients.user_client.user_schema import (
     CreateUserRequestShema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
-    LoginUserRequestSchema,
+    LoginUserRequestSchema, LoginUserResponseSchema,
 )
 from fixtures.users import FunctionUser
 from tools.fakers import fake
@@ -120,6 +120,8 @@ def test_login_user(http: HttpClients, function_user: FunctionUser):
     )
     response = http.auth_client.login_user_api(request)
     assert_status_code(response, 200)
+    response_data = LoginUserResponseSchema.model_validate_json(response.text)
+    assert_login_user_response(function_user, response_data)
 
 
 def test_login_user_with_invalid_password(

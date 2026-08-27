@@ -2,10 +2,24 @@ from clients.user_client.user_schema import (
     CreateUserRequestShema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
-    LoginUserResponseSchema,
+    LoginUserResponseSchema, BaseUserSchema,
 )
 from fixtures.users import FunctionUser
+from pydantic import UUID4
 
+
+def assert_user_fields_equal(request: FunctionUser, response_user: BaseUserSchema):
+    """
+    Базовая проверка поле ответа юзера
+    :param request: FunctionUser с ожидаемыми данными
+    :param response_user: объект user из ответа
+    :return:
+    """
+    assert request.id() == response_user.id
+    assert request.email() == response_user.email
+    assert request.name() == response_user.name
+    assert request.created_at() == response_user.created_at
+    assert request.role() == response_user.role
 
 def assert_create_user_response(
     request: CreateUserRequestShema, response: CreateUserResponseSchema
@@ -16,9 +30,13 @@ def assert_create_user_response(
     :param response: полученные параметры
     :return:
     """
+    UUID4(response.user.id)
     assert request.email == response.user.email
     assert request.name == response.user.name
-    assert response.access_token is not None
+
+    parts = response.access_token.split(".")
+    assert len(parts) == 3
+    assert all(parts)
 
 
 def assert_get_user_response(request: FunctionUser, response: GetUserResponseSchema):
@@ -28,11 +46,7 @@ def assert_get_user_response(request: FunctionUser, response: GetUserResponseSch
     :param response: полученные параметры
     :return:
     """
-    assert request.id() == response.user.id
-    assert request.email() == response.user.email
-    assert request.response.user.name == response.user.name
-    assert request.response.user.created_at == response.user.created_at
-    assert request.response.user.role == response.user.role
+    assert_user_fields_equal(request, response.user)
 
 
 def assert_login_user_response(
@@ -44,8 +58,4 @@ def assert_login_user_response(
     :param response: полученные параметры
     :return:
     """
-    assert request.id() == response.user.id
-    assert request.email() == response.user.email
-    assert request.name() == response.user.name
-    assert request.created_at() == response.user.created_at
-    assert request.role() == response.user.role
+    assert_user_fields_equal(request, response.user)
