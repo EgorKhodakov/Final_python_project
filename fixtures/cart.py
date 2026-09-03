@@ -20,7 +20,7 @@ class FunctionCart(BaseModel):
         return self.request.product_id
 
     def user_id(self):
-        return self.user_id
+        return self.request.user_id
 
 
 @pytest.fixture(scope="function")

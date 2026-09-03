@@ -1,20 +1,29 @@
 from httpx import Response
 
 from assertions.base_assert import assert_equals
+from clients.cart_client.cart_schema import CartResponseSchema, AddCartRequestSchema
 
 
-def assert_cart_fields(actual: Response):
+def assert_cart_fields(actual: CartResponseSchema):
     """
-    Проверка совпадения полей корзины
+    Валидация полей и типов данных корзины
     :param actual: полученные поля
     :return:
     """
-    fields = ["items", "totalPriceCents"]
-    for field in fields:
-        assert field in actual.json(), f"Field {field} not found in response.json"
-    assert isinstance(
-        actual.json()["items"], list
-    ), f"Expected a list, got {type(actual.json()['items'])}"
+    CartResponseSchema.model_validate_json(actual.text)
+
+
+def assert_add_product_id_and_quantity(
+    actual: CartResponseSchema, expected: AddCartRequestSchema
+):
+    """
+    Проверка, что добавленный в корзину товар совпадает по id и количеству с переданным товаром
+    :param actual: Полученный ответ от апи
+    :param expected: Ожидаемый ответ
+    :return:
+    """
+    assert_equals(actual.items[0].product_id, expected.product_id)
+    assert_equals(actual.items[0].quantity, expected.quantity)
 
 
 def assert_prise(actual: Response, expected_price):

@@ -3,14 +3,16 @@ import pytest
 from assertions.base_assert import assert_status_code
 from assertions.user_asserts import (
     assert_create_user_response,
-    assert_get_user_response, assert_login_user_response,
+    assert_get_user_response,
+    assert_login_user_response,
 )
 from clients.http_clients import HttpClients
 from clients.user_client.user_schema import (
     CreateUserRequestShema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
-    LoginUserRequestSchema, LoginUserResponseSchema,
+    LoginUserRequestSchema,
+    LoginUserResponseSchema,
 )
 from fixtures.users import FunctionUser
 from tools.fakers import fake
@@ -27,6 +29,57 @@ def test_create_user(http: HttpClients):
     response_data = CreateUserResponseSchema.model_validate_json(response.text)
     assert_status_code(response, 200)
     assert_create_user_response(request, response_data)
+
+
+@pytest.mark.xfail(reason="Ожидается 400 возвращает 500")
+def test_create_user_with_duplicate_email(http: HttpClients):
+    """
+    Создание пользователя дважды с одинаковыми данными
+    :param http:
+    :return:
+    """
+    request = CreateUserRequestShema()
+    first_response = http.auth_client.create_user_api(request)
+    assert_status_code(first_response, 200)
+    second_response = http.auth_client.create_user_api(request)
+    assert_status_code(second_response, 400)
+
+
+@pytest.mark.parametrize(
+    "email, password, name, status_code",
+    [
+        ("", "passwer@#$5", "egor", 400),
+        ("qa@email.com", "", "egor", 400),
+        pytest.param(
+            "qa@email.com",
+            "pass",
+            "egor",
+            400,
+            marks=pytest.mark.xfail(reason="должен вернуть 200, возвращает 500"),
+        ),
+        pytest.param(
+            "qa@email.com",
+            "123456",
+            "egor",
+            400,
+            marks=pytest.mark.xfail(reason="должен вернуть 200, возвращает 500"),
+        ),
+    ],
+    ids=[
+        "create-user_without_email",
+        "create-user_without_password",
+        "create-user_with_short_password",
+        "create-user_with_digital_password",
+    ],
+)
+def test_create_user_negative(http: HttpClients, email, password, name, status_code):
+    request = CreateUserRequestShema(
+        email=email,
+        password=password,
+        name=name,
+    )
+    response = http.auth_client.create_user_api(request)
+    assert_status_code(response, status_code)
 
 
 def test_get_user_by_id(http: HttpClients, function_user: FunctionUser):
@@ -139,3 +192,32 @@ def test_login_user_with_invalid_password(
     )
     response = http.auth_client.login_user_api(request)
     assert_status_code(response, 401)
+
+
+def test_delete_user(http: HttpClients, function_user: FunctionUser):
+    """
+    Проверка удаления пользователя
+    :param http:
+    :param function_user: фикстура создающая пользователя
+    :return:
+    """
+    response = http.auth_client.delete_user_api(
+        function_user.id(), function_user.access_token()
+    )
+    assert_status_code(response, 200)
+
+
+def test_delete_user_twice_returns_404(http: HttpClients, function_user: FunctionUser):
+    """
+    Проверка удаления пользователя
+    :param http:
+    :param function_user: фикстура создающая пользователя
+    :return:
+    """
+    user_id = function_user.id()
+    access_token = function_user.access_token()
+
+    first_response = http.auth_client.delete_user_api(user_id, access_token)
+    assert_status_code(first_response, 200)
+    second_response = http.auth_client.delete_user_api(user_id, access_token)
+    assert_status_code(second_response, 404)

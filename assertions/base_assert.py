@@ -1,4 +1,4 @@
-from requests import Response
+from httpx import Response
 
 
 def assert_status_code(actual: Response, expected: int):

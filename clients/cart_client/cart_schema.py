@@ -1,9 +1,11 @@
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class PromocodeSchema(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     code: str
 
 
@@ -11,6 +13,8 @@ class AddCartRequestSchema(BaseModel):
     """
     Модель товара расположенного в корзине
     """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     product_id: str = Field(alias="productId")
     quantity: int
@@ -20,6 +24,8 @@ class CartResponseSchema(BaseModel):
     """
     Модель ответа запроса на получение корзины
     """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     items: List[AddCartRequestSchema]
     total_price_cents: str = Field(alias="totalPriceCents")

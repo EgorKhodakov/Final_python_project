@@ -2,7 +2,8 @@ from clients.user_client.user_schema import (
     CreateUserRequestShema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
-    LoginUserResponseSchema, BaseUserSchema,
+    LoginUserResponseSchema,
+    BaseUserSchema,
 )
 from fixtures.users import FunctionUser
 from pydantic import UUID4
@@ -20,6 +21,7 @@ def assert_user_fields_equal(request: FunctionUser, response_user: BaseUserSchem
     assert request.name() == response_user.name
     assert request.created_at() == response_user.created_at
     assert request.role() == response_user.role
+
 
 def assert_create_user_response(
     request: CreateUserRequestShema, response: CreateUserResponseSchema

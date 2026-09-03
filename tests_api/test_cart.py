@@ -1,7 +1,11 @@
 import pytest
 
 from assertions.base_assert import assert_status_code
-from assertions.cart_asserts import assert_cart_fields
+from assertions.cart_asserts import (
+    assert_cart_fields,
+    assert_add_product_id_and_quantity,
+)
+from clients.cart_client.cart_schema import AddCartRequestSchema, CartResponseSchema
 from clients.http_clients import HttpClients
 from fixtures.cart import FunctionCart
 from fixtures.users import FunctionUser
@@ -12,15 +16,20 @@ def test_get_cart(http: HttpClients, function_user: FunctionUser):
         function_user.id(), function_user.access_token()
     )
     assert_status_code(response, 200)
+    assert_cart_fields(response)
 
 
 def test_add_product_to_cart(http: HttpClients, function_user: FunctionUser):
-    request = {"product_id": "550e8400-e29b-41d4-a716-446655440001", "quantity": 1}
-    response = http.cart_client.add_product_to_cart(
-        function_user.id(), request, function_user.access_token()
+    request = AddCartRequestSchema(
+        product_id="550e8400-e29b-41d4-a716-446655440001", quantity=1
     )
+    response = http.cart_client.add_product_to_cart(
+        function_user.id(), request.model_dump(), function_user.access_token()
+    )
+    response_data = CartResponseSchema.model_validate_json(response.text)
     assert_status_code(response, 200)
     assert_cart_fields(response)
+    assert_add_product_id_and_quantity(response_data, request)
 
 
 def test_delete_product_from_cart(
@@ -30,6 +39,7 @@ def test_delete_product_from_cart(
         function_user.id(), function_cart.product_id(), function_user.access_token()
     )
     assert_status_code(response, 200)
+    assert_cart_fields(response)
 
 
 def test_delete_none_product_from_cart(
@@ -50,6 +60,7 @@ def test_clear_cart(
         function_user.id(), function_user.access_token()
     )
     assert_status_code(response, 200)
+    assert_cart_fields(response)
 
 
 def test_add_product_with_insufficient_stock(

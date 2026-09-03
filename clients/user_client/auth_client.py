@@ -43,3 +43,14 @@ class AuthClient(BaseClient):
         """
         response = self.create_user_api(request)
         return CreateUserResponseSchema.model_validate_json(response.text)
+
+    def delete_user_api(self, user_id: str, access_token: str) -> Response:
+        """
+        Метод удаления юзера
+        :param user_id: уникальный id пользователя
+        :param access_token: токен
+        :return:
+        """
+        return self._request(
+            "DELETE", f"/v1/users/{user_id}", access_token=access_token
+        )

@@ -1,3 +1,5 @@
+from typing import Generator, Any
+
 import pytest
 from pydantic import BaseModel
 
@@ -66,7 +68,7 @@ class FunctionUser(BaseModel):
 
 
 @pytest.fixture(scope="function")
-def function_user(http) -> FunctionUser:
+def function_user(http) -> Generator[FunctionUser, Any, None]:
     """
     Фикстура возвращающая готового юзера
     :param http:
@@ -74,4 +76,6 @@ def function_user(http) -> FunctionUser:
     """
     request = CreateUserRequestShema()
     response = http.auth_client.create_user(request)
-    return FunctionUser(request=request, response=response)
+    user = FunctionUser(request=request, response=response)
+    yield user
+    http.auth_client.delete_user_api(user.id, access_token=response.access_token)
