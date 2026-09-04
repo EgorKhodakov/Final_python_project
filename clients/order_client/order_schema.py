@@ -40,6 +40,12 @@ class OrderSchema(BaseModel):
     status: str
 
 
+class GetOrderListSchema(BaseModel):
+    """
+    Схема ответа на получение списка заказов
+    """
+    orders: List[OrderSchema]
+
 class CreateOrderResponseSchema(BaseModel):
     """
     Схема ответа на создание заказа

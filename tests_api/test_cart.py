@@ -3,7 +3,7 @@ import pytest
 from assertions.base_assert import assert_status_code
 from assertions.cart_asserts import (
     assert_cart_fields,
-    assert_add_product_id_and_quantity,
+    assert_add_product_id_and_quantity, assert_cart_is_clear,
 )
 from clients.cart_client.cart_schema import AddCartRequestSchema, CartResponseSchema
 from clients.http_clients import HttpClients
@@ -39,7 +39,9 @@ def test_delete_product_from_cart(
         function_user.id(), function_cart.product_id(), function_user.access_token()
     )
     assert_status_code(response, 200)
+    response_data = CartResponseSchema.model_validate_json(response.text)
     assert_cart_fields(response)
+    assert_cart_is_clear(response_data)
 
 
 def test_delete_none_product_from_cart(
@@ -60,7 +62,9 @@ def test_clear_cart(
         function_user.id(), function_user.access_token()
     )
     assert_status_code(response, 200)
+    response_data = CartResponseSchema.model_validate_json(response.text)
     assert_cart_fields(response)
+    assert_cart_is_clear(response_data)
 
 
 def test_add_product_with_insufficient_stock(

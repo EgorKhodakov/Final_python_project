@@ -44,3 +44,8 @@ def asser_len_items(actual: Response, expected_len):
     :return:
     """
     assert_equals(len(actual.json()["items"]), expected_len)
+
+def assert_cart_is_clear(actual: CartResponseSchema):
+    assert not actual.items
+    assert actual.total_price_cents == "0"
+
