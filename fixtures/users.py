@@ -1,12 +1,14 @@
-from typing import Generator, Any
+from typing import Any, Generator
 
 import pytest
 from pydantic import BaseModel
 
 from clients.user_client.user_schema import (
     CreateUserRequestShema,
-    CreateUserResponseSchema,
+    CreateUserResponseSchema, LoginUserRequestSchema,
 )
+
+
 
 
 class FunctionUser(BaseModel):
@@ -17,6 +19,7 @@ class FunctionUser(BaseModel):
     request: CreateUserRequestShema
     response: CreateUserResponseSchema
 
+    @property
     def id(self) -> str:
         """
         Возвращает id пользователя
@@ -24,6 +27,15 @@ class FunctionUser(BaseModel):
         """
         return self.response.user.id
 
+    @property
+    def incorrect_id(self):
+        """
+        Возвращает не корректный id пользователя
+        :return:
+        """
+        return self.response.user.id[:-3] + "asd"
+
+    @property
     def password(self) -> str:
         """
         Возвращает пароль пользователя
@@ -31,6 +43,7 @@ class FunctionUser(BaseModel):
         """
         return self.request.password
 
+    @property
     def email(self) -> str:
         """
         Возвращает email пользователя
@@ -38,6 +51,7 @@ class FunctionUser(BaseModel):
         """
         return self.request.email
 
+    @property
     def access_token(self) -> str:
         """
         Возвращает авторизационный токен
@@ -45,6 +59,7 @@ class FunctionUser(BaseModel):
         """
         return self.response.access_token
 
+    @property
     def name(self) -> str:
         """
         Возвращает имя пользователя
@@ -52,6 +67,7 @@ class FunctionUser(BaseModel):
         """
         return self.response.user.name
 
+    @property
     def created_at(self):
         """
         Возвращает время создания пользователя
@@ -59,12 +75,27 @@ class FunctionUser(BaseModel):
         """
         return self.response.user.created_at
 
+    @property
     def role(self) -> str:
         """
         Возвращает роль пользователя
         :return:
         """
         return self.response.user.role
+
+    @property
+    def valid_login_payload(self):
+        return LoginUserRequestSchema(
+            email=self.email,
+            password=self.password,
+        )
+
+    @property
+    def login_payload_with_invalid_password(self):
+        return LoginUserRequestSchema(
+            email=self.email,
+            password=self.password[:-4]+"aaws",
+        )
 
 
 @pytest.fixture(scope="function")

@@ -1,12 +1,14 @@
+from pydantic import UUID4
+
+from assertions.base_assert import assert_equals, assert_is_true, assert_len
 from clients.user_client.user_schema import (
+    BaseUserSchema,
     CreateUserRequestShema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
     LoginUserResponseSchema,
-    BaseUserSchema,
 )
 from fixtures.users import FunctionUser
-from pydantic import UUID4
 
 
 def assert_user_fields_equal(request: FunctionUser, response_user: BaseUserSchema):
@@ -16,11 +18,12 @@ def assert_user_fields_equal(request: FunctionUser, response_user: BaseUserSchem
     :param response_user: объект user из ответа
     :return:
     """
-    assert request.id() == response_user.id
-    assert request.email() == response_user.email
-    assert request.name() == response_user.name
-    assert request.created_at() == response_user.created_at
-    assert request.role() == response_user.role
+
+    assert_equals(request.id, response_user.id)
+    assert_equals(request.email, response_user.email)
+    assert_equals(request.name, response_user.name)
+    assert_equals(request.created_at, response_user.created_at)
+    assert_equals(request.role, response_user.role)
 
 
 def assert_create_user_response(
@@ -32,13 +35,16 @@ def assert_create_user_response(
     :param response: полученные параметры
     :return:
     """
-    UUID4(response.user.id)
-    assert request.email == response.user.email
-    assert request.name == response.user.name
-
-    parts = response.access_token.split(".")
-    assert len(parts) == 3
-    assert all(parts)
+    UUID4(response.user.id)  # Проверка, что формат id корректный
+    assert_equals(request.email, response.user.email)
+    assert_equals(request.name, response.user.name)
+    assert_is_true(response.user.created_at)
+    assert_equals(response.user.role, "user")
+    parts = response.access_token.split(
+        "."
+    )  # Проверка, что токен состоит из трех частей
+    assert_len(parts, 3)
+    assert_is_true(all(parts))
 
 
 def assert_get_user_response(request: FunctionUser, response: GetUserResponseSchema):

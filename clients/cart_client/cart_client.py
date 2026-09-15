@@ -72,13 +72,18 @@ class CartClient(BaseClient):
         :return: объект httpx Response
         """
         return self._request(
-            "POST", f"/v1/users/{user_id}/cart/promocode", json=paylod.model_dump()
+            "POST",
+            f"/v1/users/{user_id}/cart/promocode",
+            json=paylod.model_dump(),
+            access_token=access_token,
         )
 
-    def remove_promocode_from_cart(self, user_id: str) -> Response:
+    def remove_promocode_from_cart(self, user_id: str, access_token: str) -> Response:
         """
         Удаление промокода из корзины
         :param user_id: уникальный id пользователя
         :return: объект httpx Response
         """
-        return self._request("DELETE", f"/v1/users/{user_id}/cart/promocode")
+        return self._request(
+            "DELETE", f"/v1/users/{user_id}/cart/promocode", access_token=access_token
+        )

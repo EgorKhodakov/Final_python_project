@@ -1,9 +1,13 @@
 from typing import List
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PromocodeSchema(BaseModel):
+    """
+    добавление промокода в корзину
+    """
+
     model_config = ConfigDict(populate_by_name=True)
 
     code: str

@@ -44,7 +44,9 @@ class GetOrderListSchema(BaseModel):
     """
     Схема ответа на получение списка заказов
     """
+
     orders: List[OrderSchema]
+
 
 class CreateOrderResponseSchema(BaseModel):
     """

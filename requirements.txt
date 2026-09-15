@@ -9,3 +9,4 @@ faker
 requests
 pydantic
 httpx
+psycopg2
