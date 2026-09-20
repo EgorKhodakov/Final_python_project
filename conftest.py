@@ -4,5 +4,5 @@ pytest_plugins = (
     "fixtures.cart",
     "fixtures.order",
     "fixtures.product",
-    "fixtures.db_clients"
+    "fixtures.data_base"
 )

@@ -6,7 +6,7 @@ from assertions.base_assert import assert_status_code
 from assertions.user_asserts import (
     assert_create_user_response,
     assert_get_user_response,
-    assert_login_user_response,
+    assert_login_user_response, assert_user_id_in_db, assert_email_in_db,
 )
 from clients.http_clients import HttpClients
 from clients.user_client.user_schema import (
@@ -16,30 +16,32 @@ from clients.user_client.user_schema import (
     LoginUserRequestSchema,
     LoginUserResponseSchema,
 )
+from db_clients.database_facade import FacadeDB
 from fixtures.users import FunctionUser
 from tools.fakers import fake
 
 @pytest.mark.user
 class TestUser:
 
-    def test_create_user(self, http: HttpClients):
+    def test_create_user(self, http: HttpClients, data_base: FacadeDB):
         """
         Создание пользователя
         :param http:
-        :return:
         """
         request = CreateUserRequestShema()
         response = http.auth_client.create_user_api(request)
         response_data = CreateUserResponseSchema.model_validate_json(response.text)
         assert_status_code(response, HTTPStatus.OK)
         assert_create_user_response(request, response_data)
+        assert_user_id_in_db(response_data.user.id, data_base)
+        assert_email_in_db(request.email, response_data.user.id, data_base)
+
 
     @pytest.mark.xfail(reason="Ожидается 400 возвращает 500")
     def test_create_user_with_duplicate_email(self, http: HttpClients):
         """
         Создание пользователя дважды с одинаковыми данными
         :param http:
-        :return:
         """
         request = CreateUserRequestShema()
         first_response = http.auth_client.create_user_api(request)
@@ -90,7 +92,6 @@ class TestUser:
         Получение пользователя по id
         :param http:
         :param function_user:
-        :return:
         """
         user_id = function_user.id
         response = http.auth_client.get_user_by_id_api(user_id)
@@ -119,7 +120,6 @@ class TestUser:
         """
         Авторизация пользователя
         :param http:
-        :return:
         """
 
         request = LoginUserRequestSchema(email=email, password=password)
@@ -158,7 +158,6 @@ class TestUser:
         """
         Получение пользователя по несуществующему id
         :param http:
-        :return:
         """
         response = http.auth_client.get_user_by_id_api(user_id)
         assert_status_code(response, status_code)
@@ -168,7 +167,6 @@ class TestUser:
         Проверка логина пользователя с валидными данными
         :param http:
         :param function_user:
-        :return:
         """
         response = http.auth_client.login_user_api(function_user.valid_login_payload)
         assert_status_code(response, HTTPStatus.OK)
@@ -182,7 +180,6 @@ class TestUser:
         проверка логина польлователя с валидныи email и невалидным паролем
         :param http:
         :param function_user:
-        :return:
         """
         request = function_user.login_payload_with_invalid_password
         response = http.auth_client.login_user_api(request)
@@ -193,21 +190,19 @@ class TestUser:
         Проверка удаления пользователя
         :param http:
         :param function_user: фикстура создающая пользователя
-        :return:
         """
         response = http.auth_client.delete_user_api(
             function_user.id, function_user.access_token
         )
         assert_status_code(response, HTTPStatus.OK)
 
-    def test_delete_user_twice_returns_404(
+    def test_delete_user_twice_return_404(
         self, http: HttpClients, function_user: FunctionUser
     ):
         """
         Проверка удаления пользователя
         :param http:
         :param function_user: фикстура создающая пользователя
-        :return:
         """
         user_id = function_user.id
         access_token = function_user.access_token

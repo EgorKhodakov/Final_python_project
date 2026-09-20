@@ -8,6 +8,7 @@ from clients.user_client.user_schema import (
     GetUserResponseSchema,
     LoginUserResponseSchema,
 )
+from db_clients.database_facade import FacadeDB
 from fixtures.users import FunctionUser
 
 
@@ -67,3 +68,25 @@ def assert_login_user_response(
     :return:
     """
     assert_user_fields_equal(request, response.user)
+
+
+def assert_user_id_in_db(user_id: str, data_base: FacadeDB):
+    """
+    Проверка, что созданный пользователь присутствует в базе данных
+    :param user_id: id пользователя
+    :param data_base: фикстура для запросов к БД
+    """
+    user = data_base.users.get_user_by_id(user_id)
+    assert_len(user, 1)
+    assert_equals(user[0][0], user_id)
+
+
+def assert_email_in_db(api_email: str, user_id: str, data_base: FacadeDB):
+    """
+    :param api_email: email переданный в запросе на регистрацию пользователя
+    :param user_id: id для получения email юзера
+    :param data_base: фикстура для запросов к БД
+    """
+    db_email = data_base.users.get_user_email(user_id)[0][0]
+    assert_equals(api_email, db_email)
+
