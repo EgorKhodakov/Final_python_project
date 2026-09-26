@@ -22,6 +22,7 @@ from fixtures.cart import FunctionCart
 from fixtures.order import FunctionOrder
 from fixtures.users import FunctionUser
 
+
 @pytest.mark.orders
 class TestOrders:
 
@@ -116,9 +117,7 @@ class TestOrders:
         :param function_user: фикстура создающая пользователя
         """
         order_id = function_order.get_order_id()
-        response = http.order_client.cancel_order(
-            order_id, function_user.access_token
-        )
+        response = http.order_client.cancel_order(order_id, function_user.access_token)
         assert_status_code(response, HTTPStatus.OK)
         assert_order_status(function_order.response.order, "ORDER_STATUS_CREATED")
         response_data = CreateOrderResponseSchema.model_validate_json(response.text)

@@ -89,4 +89,3 @@ def assert_email_in_db(api_email: str, user_id: str, data_base: FacadeDB):
     """
     db_email = data_base.users.get_user_email(user_id)[0][0]
     assert_equals(api_email, db_email)
-

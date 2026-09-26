@@ -3,7 +3,6 @@ from db_clients.users_db import UserDB
 from db_clients.product_db import ProductDB
 
 
-
 class FacadeDB:
     def __init__(self, connection):
         self.products = ProductDB(connection)

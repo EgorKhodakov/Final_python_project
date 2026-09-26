@@ -52,7 +52,9 @@ class TestProduct:
         response = http.products_client.get_product_by_id(product_id)
         assert_status_code(response, status_code)
 
-    def test_get_product_by_id(self, http: HttpClients, get_product_id, data_base: FacadeDB):
+    def test_get_product_by_id(
+        self, http: HttpClients, get_product_id, data_base: FacadeDB
+    ):
         """
         Получение продукта по id
         :param http: httpx клиент для выполнения запросов

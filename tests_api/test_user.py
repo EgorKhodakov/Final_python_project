@@ -6,7 +6,9 @@ from assertions.base_assert import assert_status_code
 from assertions.user_asserts import (
     assert_create_user_response,
     assert_get_user_response,
-    assert_login_user_response, assert_user_id_in_db, assert_email_in_db,
+    assert_login_user_response,
+    assert_user_id_in_db,
+    assert_email_in_db,
 )
 from clients.http_clients import HttpClients
 from clients.user_client.user_schema import (
@@ -19,6 +21,7 @@ from clients.user_client.user_schema import (
 from db_clients.database_facade import FacadeDB
 from fixtures.users import FunctionUser
 from tools.fakers import fake
+
 
 @pytest.mark.user
 class TestUser:
@@ -35,7 +38,6 @@ class TestUser:
         assert_create_user_response(request, response_data)
         assert_user_id_in_db(response_data.user.id, data_base)
         assert_email_in_db(request.email, response_data.user.id, data_base)
-
 
     @pytest.mark.xfail(reason="Ожидается 400 возвращает 500")
     def test_create_user_with_duplicate_email(self, http: HttpClients):

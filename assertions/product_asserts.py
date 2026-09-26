@@ -72,7 +72,9 @@ def assert_product_id(actual: ProductResponseSchema, expected_id: str):
     assert_equals(actual.product.id, expected_id)
 
 
-def assert_product_price(actual: ProductResponseSchema, product_id: str , data_base: FacadeDB):
+def assert_product_price(
+    actual: ProductResponseSchema, product_id: str, data_base: FacadeDB
+):
     """
     Проверка цены товара
     :param product_id:

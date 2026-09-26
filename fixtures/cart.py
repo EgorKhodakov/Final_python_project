@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from clients.cart_client.cart_schema import AddCartRequestSchema, CartResponseSchema
 from clients.http_clients import HttpClients
+from db_clients.database_facade import FacadeDB
 from fixtures.users import FunctionUser
 
 
@@ -26,16 +27,16 @@ class FunctionCart(BaseModel):
 
 
 @pytest.fixture(scope="function")
-def product_to_cart() -> AddCartRequestSchema:
+def product_to_cart(data_base: FacadeDB) -> AddCartRequestSchema:
     return AddCartRequestSchema(
-        product_id="550e8400-e29b-41d4-a716-446655440001", quantity=1
+        product_id=data_base.products.get_product_id(), quantity=1
     )
 
 
 @pytest.fixture(scope="function")
-def product_over_stock_request() -> AddCartRequestSchema:
+def product_over_stock_request(data_base: FacadeDB) -> AddCartRequestSchema:
     return AddCartRequestSchema(
-        product_id="550e8400-e29b-41d4-a716-446655440001", quantity=99999
+        product_id=data_base.products.get_product_id(), quantity=99999
     )
 
 

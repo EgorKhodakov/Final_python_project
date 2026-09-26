@@ -5,10 +5,9 @@ from pydantic import BaseModel
 
 from clients.user_client.user_schema import (
     CreateUserRequestShema,
-    CreateUserResponseSchema, LoginUserRequestSchema,
+    CreateUserResponseSchema,
+    LoginUserRequestSchema,
 )
-
-
 
 
 class FunctionUser(BaseModel):
@@ -94,7 +93,7 @@ class FunctionUser(BaseModel):
     def login_payload_with_invalid_password(self):
         return LoginUserRequestSchema(
             email=self.email,
-            password=self.password[:-4]+"aaws",
+            password=self.password[:-4] + "aaws",
         )
 
 

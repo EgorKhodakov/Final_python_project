@@ -7,11 +7,16 @@ from assertions.cart_asserts import (
     assert_add_product_id_and_quantity,
     assert_cart_fields,
     assert_cart_is_clear,
+    assert_product_in_cart,
+    assert_product_not_in_cart_db,
+    assert_cart_is_clear_db,
 )
 from clients.cart_client.cart_schema import AddCartRequestSchema, CartResponseSchema
 from clients.http_clients import HttpClients
+from db_clients.database_facade import FacadeDB
 from fixtures.cart import FunctionCart
 from fixtures.users import FunctionUser
+
 
 @pytest.mark.cart
 class TestCart:
@@ -33,6 +38,7 @@ class TestCart:
         http: HttpClients,
         function_user: FunctionUser,
         product_to_cart: AddCartRequestSchema,
+        data_base: FacadeDB,
     ):
         """
         Добавление товара в корзину
@@ -47,9 +53,15 @@ class TestCart:
         response_data = CartResponseSchema.model_validate_json(response.text)
         assert_status_code(response, HTTPStatus.OK)
         assert_add_product_id_and_quantity(response_data, request)
+        assert_product_in_cart(function_user.id, request.product_id, data_base)
 
     def test_delete_product_from_cart(
-        self, http: HttpClients, function_user: FunctionUser, function_cart):
+        self,
+        http: HttpClients,
+        function_user: FunctionUser,
+        function_cart,
+        data_base: FacadeDB,
+    ):
         """
         Удаление товара из корзины
         :param http: Клиент для запроса
@@ -64,6 +76,9 @@ class TestCart:
         assert_status_code(response, HTTPStatus.OK)
         response_data = CartResponseSchema.model_validate_json(response.text)
         assert_cart_is_clear(response_data)
+        assert_product_not_in_cart_db(
+            function_cart.product_id, function_user.id, data_base
+        )
 
     @pytest.mark.xfail(reason="Ожидается 404, выбрасывает 500")
     def test_delete_product_with_invalid_id(
@@ -84,6 +99,7 @@ class TestCart:
         http: HttpClients,
         function_user: FunctionUser,
         function_cart: FunctionCart,
+        data_base: FacadeDB,
     ):
         """
         Очистка корзины полностью
@@ -97,6 +113,7 @@ class TestCart:
         assert_status_code(response, HTTPStatus.OK)
         response_data = CartResponseSchema.model_validate_json(response.text)
         assert_cart_is_clear(response_data)
+        assert_cart_is_clear_db(function_user.id, data_base)
 
     def test_add_product_with_insufficient_stock(
         self, http: HttpClients, function_user: FunctionUser, product_over_stock_request

@@ -1,7 +1,7 @@
 from db_clients.base_db_client import DatabaseClient
 
-class UserDB(DatabaseClient):
 
+class UserDB(DatabaseClient):
 
     def get_user_by_id(self, user_id):
         return self._query("select * from users where id = %s", (user_id,))

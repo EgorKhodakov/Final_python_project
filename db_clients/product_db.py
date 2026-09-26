@@ -7,7 +7,12 @@ class ProductDB(DatabaseClient):
         return self._query("select * from products where id = %s", (product_id,))
 
     def get_product_price(self, product_id):
-        return self._query("select price_cents from products where id = %s", (product_id,))[0][0]
+        return self._query(
+            "select price_cents from products where id = %s", (product_id,)
+        )[0][0]
 
     def get_product_list_count(self):
         return self._query("select count(*) from products")[0][0]
+
+    def get_product_id(self):
+        return self._query("select id from products limit 1")[0][0]
