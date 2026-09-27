@@ -9,7 +9,7 @@ from assertions.order_asserts import (
     assert_order_id_is_correct,
     assert_order_price_sum_is_correct,
     assert_order_status,
-    user_id_is_correct,
+    user_id_is_correct, assert_order_in_db, assert_order_status_in_db, assert_order_sum_in_bd
 )
 from clients.http_clients import HttpClients
 from clients.order_client.order_schema import (
@@ -18,6 +18,7 @@ from clients.order_client.order_schema import (
     GetOrderListSchema,
     RefreshOrderSchema,
 )
+from db_clients.database_facade import FacadeDB
 from fixtures.cart import FunctionCart
 from fixtures.order import FunctionOrder
 from fixtures.users import FunctionUser
@@ -31,6 +32,7 @@ class TestOrders:
         http: HttpClients,
         function_user: FunctionUser,
         function_cart: FunctionCart,
+        data_base: FacadeDB
     ):
         """
         Проверка создания заказа
@@ -46,6 +48,9 @@ class TestOrders:
         assert_create_order_id_is_note_none(response_data.order)
         assert_order_price_sum_is_correct(response_data.order)
         user_id_is_correct(response_data.order, function_user.id)
+        assert_order_in_db(response_data, function_user.id, data_base)
+        assert_order_status_in_db(1, function_user.id, data_base)
+        assert_order_sum_in_bd(response_data, function_user.id, data_base)
 
     def test_create_order_with_incorrect_user_id(
         self,
@@ -68,6 +73,7 @@ class TestOrders:
         http: HttpClients,
         function_order: FunctionOrder,
         function_user: FunctionUser,
+        data_base: FacadeDB
     ):
         """
         Получение заказа
@@ -83,6 +89,7 @@ class TestOrders:
         assert_order_price_sum_is_correct(response_data.order)
         assert_order_status(response_data.order, "ORDER_STATUS_CREATED")
         user_id_is_correct(response_data.order, function_user.id)
+        assert_order_sum_in_bd(response_data, function_user.id, data_base)
 
     def test_get_order_list(
         self,
@@ -109,6 +116,7 @@ class TestOrders:
         http: HttpClients,
         function_order: FunctionOrder,
         function_user: FunctionUser,
+        data_base: FacadeDB
     ):
         """
         Отмена заказа
@@ -122,6 +130,7 @@ class TestOrders:
         assert_order_status(function_order.response.order, "ORDER_STATUS_CREATED")
         response_data = CreateOrderResponseSchema.model_validate_json(response.text)
         assert_order_status(response_data.order, "ORDER_STATUS_CANCELLED")
+        assert_order_status_in_db(4, function_user.id, data_base)
 
     def test_refresh_status(
         self,
@@ -129,6 +138,7 @@ class TestOrders:
         function_order: FunctionOrder,
         function_user: FunctionUser,
         update_order_status_request: RefreshOrderSchema,
+        data_base: FacadeDB
     ):
         """
         Обновление статуса заказа
@@ -147,3 +157,5 @@ class TestOrders:
         assert_order_status(function_order.response.order, "ORDER_STATUS_CREATED")
         response_data = CreateOrderResponseSchema.model_validate_json(response.text)
         assert_order_status(response_data.order, "ORDER_STATUS_PAID")
+        assert_order_status_in_db(2, function_user.id, data_base)
+        assert_order_sum_in_bd(response_data, function_user.id, data_base)

@@ -1,7 +1,8 @@
 from httpx import Response
 
-from assertions.base_assert import assert_equals
-from clients.order_client.order_schema import OrderSchema
+from assertions.base_assert import assert_equals, assert_is_true, assert_len
+from clients.order_client.order_schema import OrderSchema, CreateOrderResponseSchema
+from db_clients.database_facade import FacadeDB
 
 
 def assert_order_status(actual: OrderSchema, expected: str):
@@ -80,3 +81,26 @@ def assert_order_id_equals(actual: Response, expected):
     :return:
     """
     assert_equals(actual.json()["order"]["id"], expected)
+
+
+def assert_order_in_db(actual_order_id: CreateOrderResponseSchema, user_id, data_base: FacadeDB):
+    """
+    Проверка соответствия номера заказа
+    :param actual_order_id: полученный id заказа
+    :param user_id: id пользователя
+    :param data_base: фикстура для запросов к БД
+    """
+    expected_order = data_base.orders.get_order_id(user_id)
+    assert_equals(actual_order_id.order.id, expected_order[0])
+
+
+def assert_order_status_in_db(actual_status: int, user_id, data_base: FacadeDB):
+    db_order_status = data_base.orders.get_order_status(user_id)
+    assert_equals(actual_status, db_order_status)
+
+
+def assert_order_sum_in_bd(actual: CreateOrderResponseSchema, user_id, data_base: FacadeDB):
+    order_sum = data_base.orders.get_total_amount_cents(user_id)[0][0]
+    assert_equals(int(actual.order.total_amount_cents), order_sum)
+
+
